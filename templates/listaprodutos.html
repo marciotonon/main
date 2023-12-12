@@ -35,10 +35,10 @@
                 </ul>
                 {% endif %}
                 {% endwith %}
-                {% for produto in produtos %}
+                {% for produto in produtos_paginados %}
                     <tr class="border">
                         <td class="px-6 py-5">{{ produto.nome }}</td>
-                        <td class="px-6 py-5">{{ produto.preco }}</td>
+                        <td class="px-6 py-5">{{ '{:,.2f}'.format(produto.preco) }}</td>
                         <td class="px-6 py-5">{{ produto.categoria.nome }}</td>
                         <td class="w-10 text-center">
                             <form method="post" action="{{ url_for('delete_produto', produto_id=produto.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir o Produto?');">
@@ -48,9 +48,24 @@
                         </td>
                     </tr>
                 {% endfor %}
-            </tbody>
-            
+              </tbody>
+              
             </table>
+            <div class="flex justify-between items-center mt-5">
+              {% if produtos_paginados.has_prev %}
+                  <a href="{{ url_for('produtos', page=produtos_paginados.prev_num) }}" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-gray-900">Anterior</a>
+              {% else %}
+                  <span class="py-2 px-4 bg-gray-400 text-white rounded cursor-not-allowed">Anterior</span>
+              {% endif %}
+              
+              <span class="text-gray-700">{{ produtos_paginados.page }} de {{ produtos_paginados.pages }}</span>
+              
+              {% if produtos_paginados.has_next %}
+                  <a href="{{ url_for('produtos', page=produtos_paginados.next_num) }}" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-gray-900">Próxima</a>
+              {% else %}
+                  <span class="py-2 px-4 bg-gray-400 text-white rounded cursor-not-allowed">Próxima</span>
+              {% endif %}
+          </div>                        
           </div>
           <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
             <a href="/" class="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0">Voltar à Home

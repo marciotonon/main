@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask import flash
 from classes import db, Usuario, Categoria, Produto
+from flask_paginate import Pagination, get_page_args
+
 
 import os
 
@@ -30,6 +32,7 @@ def create_app():
 
     return app
 
+PRODUTOS_POR_PAGINA = 4
 
 @app.route('/')
 def index():
@@ -70,8 +73,14 @@ def login():
 #rotas produtos
 @app.route('/listaprodutos')
 def produtos():
-    produtos = Produto.query.all()
-    return render_template('listaprodutos.html', produtos=produtos)
+    # Configurando a paginação
+    page = request.args.get('page', 1, type=int)
+    per_page = 10  # Defina o número desejado de itens por página
+
+    # Obtendo a lista de produtos paginada
+    produtos_paginados = Produto.query.paginate(page=page, per_page=per_page, error_out=False)
+
+    return render_template('listaprodutos.html', produtos_paginados=produtos_paginados)
 
 @app.route('/new_produto')
 def new_produto():
