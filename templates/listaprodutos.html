@@ -7,11 +7,11 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto flex items-center md:flex-row flex-col">
             <div class="flex flex-col md:pr-10 md:mb-0 mb-6 pr-0 w-full md:w-auto md:text-left text-center">
-              <h1 class="md:text-3xl text-2xl font-medium title-font text-gray-900">Lista de Categorias</h1>
+              <h1 class="md:text-3xl text-2xl font-medium title-font text-gray-900">Lista de Produtos</h1>
             </div>
             <div class="flex md:ml-auto md:mr-0 mx-auto items-center flex-shrink-0 space-x-4">
-                <form action="{{ url_for('new_categoria') }}" >
-                    <button type="submit" class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Nova Categoria</button>
+                <form action="{{ url_for('new_produto') }}" >
+                    <button type="submit" class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Novo Produto</button>
                 </form>
             </div>
           </div>
@@ -19,8 +19,9 @@
             <table class="table-auto w-full text-left whitespace-no-wrap">
               <thead>
                 <tr class="border">
-                  <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">Nome da Categoria</th>
-                  <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Descrição</th>
+                  <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">Nome do Produto</th>
+                  <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Valor</th>
+                  <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Categoria</th>
                   <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Ações</th>
                 </tr>
               </thead>
@@ -34,13 +35,14 @@
                 </ul>
                 {% endif %}
                 {% endwith %}
-                {% for categoria in categorias %}
+                {% for produto in produtos %}
                     <tr class="border">
-                        <td class="px-6 py-5">{{ categoria.nome }}</td>
-                        <td class="px-6 py-5">{{ categoria.descricao }}</td>
+                        <td class="px-6 py-5">{{ produto.nome }}</td>
+                        <td class="px-6 py-5">{{ produto.preco }}</td>
+                        <td class="px-6 py-5">{{ produto.categoria.nome }}</td>
                         <td class="w-10 text-center">
-                            <form method="post" action="{{ url_for('delete_categoria', categoria_id=categoria.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir a categoria?');">
-                                <input type="hidden" name="categoria_id" value="{{ categoria.id }}">
+                            <form method="post" action="{{ url_for('delete_produto', produto_id=produto.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir o Produto?');">
+                                <input type="hidden" name="produto_id" value="{{ produto.id }}">
                                 <button type="submit" class="text-indigo-500">Excluir</button>
                             </form>
                         </td>
