@@ -1,0 +1,18 @@
+<!-- templates/produtos.html -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <title>Lista de Categorias</title>
+    </head>
+<body>
+    <h1>Lista de Produtos</h1>
+    <ul>
+        {% for categoria in categorias %}
+            <li>{{ categoria.nome }} - {{ categoria.descricao }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
