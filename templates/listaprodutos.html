@@ -51,15 +51,13 @@
               </tbody>
               
             </table>
-            <div class="flex justify-between items-center mt-5">
+            <div class="flex justify-between items-center mt-4">
               {% if produtos_paginados.has_prev %}
                   <a href="{{ url_for('produtos', page=produtos_paginados.prev_num) }}" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-gray-900">Anterior</a>
               {% else %}
                   <span class="py-2 px-4 bg-gray-400 text-white rounded cursor-not-allowed">Anterior</span>
               {% endif %}
-              
-              <span class="text-gray-700">{{ produtos_paginados.page }} de {{ produtos_paginados.pages }}</span>
-              
+              <span class="text-gray-700">{{ produtos_paginados.page }} de {{ produtos_paginados.pages }}</span>              
               {% if produtos_paginados.has_next %}
                   <a href="{{ url_for('produtos', page=produtos_paginados.next_num) }}" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-gray-900">Próxima</a>
               {% else %}
