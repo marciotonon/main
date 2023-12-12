@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import flash
 from classes import db, Usuario, Categoria, Produto
 from flask_paginate import Pagination, get_page_args
-
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 import os
 
@@ -11,10 +11,17 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
 app.config['SECRET_KEY'] = 'DeuséFieloTempoTodo'
 db.init_app(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
 # Configurar para servir arquivos estáticos (CSS, JS, etc.)
 app.static_folder = 'static'
 app.template_folder = 'templates'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Usuario.query.get(int(user_id))
+
 
 def create_app():
     # Verifica se o banco de dados não existe antes de criar todas as tabelas
@@ -34,10 +41,6 @@ def create_app():
 
 PRODUTOS_POR_PAGINA = 4
 
-@app.route('/')
-def index():
-    usuarios = Usuario.query.all()
-    return render_template('login.html', usuarios=usuarios)
 
 @app.route('/new')
 def new():
@@ -57,21 +60,46 @@ def cadastrar():
 
     return redirect(url_for('index'))
 
+@app.route('/')
+def index():
+    usuarios = Usuario.query.all()
+    return render_template('login.html', usuarios=usuarios)
+
+# Rota dashboard (protegida por login)
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('home.html', usuario=current_user)
+
+
+# Rota de login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
         senha = request.form['senha']
-
         usuario = Usuario.query.filter_by(email=email, senha=senha).first()
 
         if usuario:
-            return render_template('home.html', usuario=usuario)
+            login_user(usuario)
+            flash('Login realizado com sucesso.', 'success')
+            return redirect(url_for('dashboard'))
+        else:
+            flash('Credenciais inválidas. Tente novamente.', 'error')
 
     return render_template('login.html')
 
+# Rota de logout
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logout realizado com sucesso.', 'success')
+    return redirect(url_for('index'))
+
 #rotas produtos
 @app.route('/listaprodutos')
+@login_required
 def produtos():
     # Configurando a paginação
     page = request.args.get('page', 1, type=int)
@@ -83,12 +111,14 @@ def produtos():
     return render_template('listaprodutos.html', produtos_paginados=produtos_paginados)
 
 @app.route('/new_produto')
+@login_required
 def new_produto():
     categorias = Categoria.query.all()
     return render_template('cadastrar_produto.html', categorias=categorias)
 
 # Adicione esta rota para excluir uma categoria
 @app.route('/delete_produto/<int:produto_id>', methods=['GET', 'POST'])
+@login_required
 def delete_produto(produto_id):
     # Obtém a categoria pelo ID
     produto = Produto.query.get(produto_id)
@@ -106,6 +136,7 @@ def delete_produto(produto_id):
     return redirect(url_for('produtos'))
 
 @app.route('/cadastrar_produto', methods=['POST'])
+@login_required
 def cadastrar_produto():
     nome = request.form['nome']
     preco = request.form['preco']
@@ -128,6 +159,7 @@ def cadastrar_produto():
 
 # Adicione esta rota para excluir uma categoria
 @app.route('/delete_categoria/<int:categoria_id>', methods=['GET', 'POST'])
+@login_required
 def delete_categoria(categoria_id):
     # Obtém a categoria pelo ID
     categoria = Categoria.query.get(categoria_id)
@@ -147,15 +179,18 @@ def delete_categoria(categoria_id):
 
 # Suas rotas categoria existentes
 @app.route('/listacategoria')
+@login_required
 def categorias():
     categorias = Categoria.query.all()
     return render_template('listaCategoria.html', categorias=categorias)
 
 @app.route('/new_categoria')
+@login_required
 def new_categoria():
     return render_template('cadastrar_categoria.html')
 
 @app.route('/cadastrar_categoria', methods=['GET', 'POST'])
+@login_required
 def cadastrar_categoria():
     if request.method == 'POST':
         nome = request.form['nome']
