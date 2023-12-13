@@ -10,7 +10,7 @@
               <h1 class="md:text-3xl text-2xl font-medium title-font text-gray-900">Lista de Produtos</h1>
             </div>
             <div class="flex md:ml-auto md:mr-0 mx-auto items-center flex-shrink-0 space-x-4">
-                <form action="{{ url_for('new_produto') }}" >
+                <form action="{{ url_for('rotas_app.new_produto') }}" >
                     <button type="submit" class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Novo Produto</button>
                 </form>
             </div>
@@ -41,7 +41,7 @@
                         <td class="px-6 py-5">{{ '{:,.2f}'.format(produto.preco) }}</td>
                         <td class="px-6 py-5">{{ produto.categoria.nome }}</td>
                         <td class="w-10 text-center">
-                            <form method="post" action="{{ url_for('delete_produto', produto_id=produto.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir o Produto?');">
+                            <form method="post" action="{{ url_for('rotas_app.delete_produto', produto_id=produto.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir o Produto?');">
                                 <input type="hidden" name="produto_id" value="{{ produto.id }}">
                                 <button type="submit" class="text-indigo-500">Excluir</button>
                             </form>
@@ -53,13 +53,13 @@
             </table>
             <div class="flex justify-between items-center mt-4">
               {% if produtos_paginados.has_prev %}
-                  <a href="{{ url_for('produtos', page=produtos_paginados.prev_num) }}" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-gray-900">Anterior</a>
+                  <a href="{{ url_for('rotas_app.produtos', page=produtos_paginados.prev_num) }}" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-gray-900">Anterior</a>
               {% else %}
                   <span class="py-2 px-4 bg-gray-400 text-white rounded cursor-not-allowed">Anterior</span>
               {% endif %}
               <span class="text-gray-700">{{ produtos_paginados.page }} de {{ produtos_paginados.pages }}</span>              
               {% if produtos_paginados.has_next %}
-                  <a href="{{ url_for('produtos', page=produtos_paginados.next_num) }}" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-gray-900">Próxima</a>
+                  <a href="{{ url_for('rotas_app.produtos', page=produtos_paginados.next_num) }}" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-gray-900">Próxima</a>
               {% else %}
                   <span class="py-2 px-4 bg-gray-400 text-white rounded cursor-not-allowed">Próxima</span>
               {% endif %}

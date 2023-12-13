@@ -1,7 +1,12 @@
 <!-- templates/produtos.html -->
 <!DOCTYPE html>
 <html lang="en">
-    {% include 'head.html' %}
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('rotas_app.static', filename='css/main.css') }}">
+    <title>index</title>
+  </head>
 <body>
     {% include 'header.html' %}
     <section class="text-gray-600 body-font">
@@ -10,7 +15,7 @@
               <h1 class="md:text-3xl text-2xl font-medium title-font text-gray-900">Lista de Categorias</h1>
             </div>
             <div class="flex md:ml-auto md:mr-0 mx-auto items-center flex-shrink-0 space-x-4">
-                <form action="{{ url_for('new_categoria') }}" >
+                <form action="{{ url_for('rotas_app.new_categoria') }}" >
                     <button type="submit" class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Nova Categoria</button>
                 </form>
             </div>
@@ -39,7 +44,7 @@
                         <td class="px-6 py-5">{{ categoria.nome }}</td>
                         <td class="px-6 py-5">{{ categoria.descricao }}</td>
                         <td class="w-10 text-center">
-                            <form method="post" action="{{ url_for('delete_categoria', categoria_id=categoria.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir a categoria?');">
+                            <form method="post" action="{{ url_for('rotas_app.delete_categoria', categoria_id=categoria.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir a categoria?');">
                                 <input type="hidden" name="categoria_id" value="{{ categoria.id }}">
                                 <button type="submit" class="text-indigo-500">Excluir</button>
                             </form>
