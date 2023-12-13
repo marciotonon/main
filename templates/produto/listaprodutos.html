@@ -1,7 +1,11 @@
-<!-- templates/produtos.html -->
 <!DOCTYPE html>
 <html lang="en">
-    {% include 'head.html' %}
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../static/css/main.css">
+    <title>index</title>
+</head>
 <body>
     {% include 'header.html' %}
     <section class="text-gray-600 body-font">
@@ -37,36 +41,74 @@
                 {% endwith %}
                 {% for produto in produtos_paginados %}
                     <tr class="border">
-                        <td class="px-6 py-5">{{ produto.nome }}</td>
-                        <td class="px-6 py-5">{{ '{:,.2f}'.format(produto.preco) }}</td>
-                        <td class="px-6 py-5">{{ produto.categoria.nome }}</td>
-                        <td class="w-10 text-center">
+                        <td class="border-t-2 border-gray-200 px-4 py-3">{{ produto.nome }}</td>
+                        <td class="border-t-2 border-gray-200 px-4 py-3">{{ '{:,.2f}'.format(produto.preco) }}</td>
+                        <td class="border-t-2 border-gray-200 px-4 py-3">{{ produto.categoria.nome }}</td>
+                        <td class="border-t-2 border-gray-200 w-10 text-center">
                             <form method="post" action="{{ url_for('rotas_app.delete_produto', produto_id=produto.id) }}" onsubmit="return confirm('Tem certeza que deseja excluir o Produto?');">
                                 <input type="hidden" name="produto_id" value="{{ produto.id }}">
-                                <button type="submit" class="text-indigo-500">Excluir</button>
+                                <button type="submit" class="text-indigo-500">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M5.25003 5.24609L6.18753 20.2461C6.23206 21.1128 6.86253 21.7461 7.68753 21.7461H16.3125C17.1408 21.7461 17.7596 21.1128 17.8125 20.2461L18.75 5.24609" stroke="#105A3D" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M3.75011 5.24609H20.2501H3.75011Z" fill="#105A3D"/>
+                                    <path d="M3.75011 5.24609H20.2501" stroke="#105A3D" stroke-width="1" stroke-miterlimit="10" stroke-linecap="round"/>
+                                    <path d="M15.3751 8.24903L15.0001 18.749M9.00008 5.24903V3.37403C8.99964 3.22617 9.02845 3.07968 9.08483 2.943C9.14121 2.80631 9.22406 2.68212 9.32862 2.57757C9.43317 2.47302 9.55736 2.39016 9.69405 2.33378C9.83073 2.2774 9.97722 2.2486 10.1251 2.24903H13.8751C14.0229 2.2486 14.1694 2.2774 14.3061 2.33378C14.4428 2.39016 14.567 2.47302 14.6715 2.57757C14.7761 2.68212 14.8589 2.80631 14.9153 2.943C14.9717 3.07968 15.0005 3.22617 15.0001 3.37403V5.24903H9.00008ZM12.0001 8.24903V18.749V8.24903ZM8.62508 8.24903L9.00008 18.749L8.62508 8.24903Z" stroke="#105A3D" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                                  </svg>
+                                </button>
                             </form>
                         </td>
                     </tr>
                 {% endfor %}
               </tbody>
-              
             </table>
-            <div class="flex justify-between items-center mt-4">
+          <div>
+            <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
               {% if produtos_paginados.has_prev %}
-                  <a href="{{ url_for('rotas_app.produtos', page=produtos_paginados.prev_num) }}" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-gray-900">Anterior</a>
+                  <a href="{{ url_for('rotas_app.produtos', page=produtos_paginados.prev_num) }}" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                      <span class="sr-only">Previous</span>
+                      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                          <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+                      </svg>
+                  </a>
               {% else %}
-                  <span class="py-2 px-4 bg-gray-400 text-white rounded cursor-not-allowed">Anterior</span>
+                  <span class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 cursor-not-allowed">
+                      <span class="sr-only">Previous</span>
+                      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                          <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+                      </svg>
+                  </span>
               {% endif %}
-              <span class="text-gray-700">{{ produtos_paginados.page }} de {{ produtos_paginados.pages }}</span>              
+              {% for page_num in produtos_paginados.iter_pages() %}
+                  {% if page_num %}
+                      {% if produtos_paginados.page == page_num %}
+                          <a href="#" aria-current="page" class="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">{{ page_num }}</a>
+                      {% else %}
+                          <a href="{{ url_for('rotas_app.produtos', page=page_num) }}" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">{{ page_num }}</a>
+                      {% endif %}
+                  {% else %}
+                      <span class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">...</span>
+                  {% endif %}
+              {% endfor %}
               {% if produtos_paginados.has_next %}
-                  <a href="{{ url_for('rotas_app.produtos', page=produtos_paginados.next_num) }}" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-gray-900">Próxima</a>
+                  <a href="{{ url_for('rotas_app.produtos', page=produtos_paginados.next_num) }}" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                      <span class="sr-only">Next</span>
+                      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                          <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                      </svg>
+                  </a>
               {% else %}
-                  <span class="py-2 px-4 bg-gray-400 text-white rounded cursor-not-allowed">Próxima</span>
+                  <span class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 cursor-not-allowed">
+                      <span class="sr-only">Next</span>
+                      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                          <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                      </svg>
+                  </span>
               {% endif %}
+            </nav>
           </div>                        
           </div>
           <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-            <a href="/" class="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0">Voltar à Home
+            <a href="/dashboard" class="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0">Voltar à Home
               <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
                 <path d="M5 12h14M12 5l7 7-7 7"></path>
               </svg>

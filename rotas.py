@@ -6,6 +6,8 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 rotas_app = Blueprint('rotas_app', __name__, template_folder='templates', static_folder='static')
 
+PRODUTOS_POR_PAGINA = 4
+
 @rotas_app.route('/new')
 def new():
     usuarios = Usuario.query.all()
@@ -35,7 +37,7 @@ def index():
 def dashboard():
     total_usuarios = Usuario.query.count()
     total_categorias = Categoria.query.count()
-    total_produtos = Categoria.query.count()
+    total_produtos = Produto.query.count()
     return render_template('home.html', usuario=current_user, total_usuarios=total_usuarios, total_categorias=total_categorias, total_produtos=total_produtos)
 
 
@@ -70,7 +72,7 @@ def logout():
 def produtos():
     # Configurando a paginação
     page = request.args.get('page', 1, type=int)
-    per_page = 10  # Defina o número desejado de itens por página
+    per_page = 4  # Defina o número desejado de itens por página
 
     # Obtendo a lista de produtos paginada
     produtos_paginados = Produto.query.filter_by(usuario=current_user).paginate(page=page, per_page=per_page, error_out=False)
@@ -80,7 +82,7 @@ def produtos():
 @rotas_app.route('/new_produto')
 @login_required
 def new_produto():
-    categorias = Categoria.query.all()
+    categorias = Categoria.query.filter_by(usuario=current_user)
     return render_template('produto/cadastrar_produto.html', categorias=categorias)
 
 # Adicione esta rota para excluir uma categoria

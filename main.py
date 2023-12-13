@@ -17,7 +17,7 @@ login_manager.login_view = 'rotas_app.login'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Usuario.query.get(int(user_id))
+    return db.session.query(Usuario).get(int(user_id))
 
 
 def create_app():
@@ -35,8 +35,6 @@ def create_app():
             db.create_all()
 
     return app
-
-PRODUTOS_POR_PAGINA = 4
 
 if __name__ == '__main__':
     with app.app_context():
